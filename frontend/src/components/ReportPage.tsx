@@ -5,6 +5,7 @@ const ReportPage: React.FC = () => {
   const { keycloak, initialized } = useKeycloak();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [report, setReport] = useState(null);
 
   const downloadReport = async () => {
     if (!keycloak?.token) {
@@ -15,13 +16,19 @@ const ReportPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
+      setReport(null);
 
       const response = await fetch(`${process.env.REACT_APP_API_URL}/reports`, {
         headers: {
           'Authorization': `Bearer ${keycloak.token}`
         }
-      });
+      }).then((r) => r.json());
 
+      if (!response.ok) {
+        setError(response.detail);
+      }
+      
+      setReport(response.report);
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -67,6 +74,12 @@ const ReportPage: React.FC = () => {
             {error}
           </div>
         )}
+        {report && (
+          <div className="mt-4 p-4 bg-green-100 text-green-700 rounded">
+            {report}
+          </div>
+        )}
+	
       </div>
     </div>
   );
