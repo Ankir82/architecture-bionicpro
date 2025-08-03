@@ -46,9 +46,5 @@ services:
         dockerfile: Dockerfile
       ports:
         - "8000:8000"
-      environment:
-        - KEYCLOAK_URL=http://keycloak:8080
-        - KEYCLOAK_REALM=reports-realm
-        - KEYCLOAK_CLIENT_ID=reports-frontend
       depends_on:
         - keycloak
